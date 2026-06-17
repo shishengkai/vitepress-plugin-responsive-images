@@ -1,6 +1,6 @@
 # vitepress-plugin-responsive-images
 
-Automatically convert local Markdown images in VitePress docs into responsive `<picture>` elements with WebP/AVIF sources and JPG/PNG fallbacks.
+Improve PageSpeed, Lighthouse, and real-world load times for VitePress documentation sites by automatically serving modern image formats and responsive sizes for local Markdown images.
 
 Keep writing images the way you already do in Markdown:
 
@@ -28,9 +28,20 @@ The plugin generates responsive variants at build time and rewrites local images
 
 ## Why
 
-VitePress lets authors write Markdown quickly, but it does not automatically generate responsive image variants for local Markdown images. This plugin keeps the authoring experience simple while improving image delivery for documentation sites.
+This plugin exists because documentation sites often fail the same PageSpeed Insights and Lighthouse image audits:
 
-It is designed for documentation that must remain usable on older enterprise devices: modern browsers can load WebP or AVIF, while older browsers can still use JPG/PNG fallbacks.
+- **Use modern image formats** — WebP or AVIF can deliver the same visual quality at a smaller download size than PNG or JPEG alone.
+- **Serve appropriately sized images** — a 1267×743 asset shown at 600×352 still downloads the full file unless you generate responsive variants.
+
+Those warnings are not abstract. Oversized, legacy-format images slow down first paint, hurt mobile users on slow networks, and drag down performance scores that search engines and site owners care about. The goal is not compression for its own sake. It is **faster page loads**, **better reader experience**, and **stronger SEO signals** — outcomes every web admin wants.
+
+VitePress makes writing docs easy, but it does not solve this by default. Authors still drop `![...](./image.png)` into Markdown, and the build serves that single file as-is. This plugin closes that gap at build time:
+
+- generates AVIF and WebP `<source>` variants for modern browsers
+- emits `srcset` / `sizes` so each viewport downloads a fitting width
+- keeps JPG/PNG fallbacks for older browsers and enterprise environments
+
+You keep the same authoring workflow. Visitors get smaller, appropriately sized images without manual export pipelines or hand-written `<picture>` markup.
 
 ## Compatibility
 

@@ -1,7 +1,7 @@
 {
   "name": "vitepress-plugin-responsive-images",
   "version": "0.3.0",
-  "description": "Automatically convert local Markdown images in VitePress docs into responsive picture elements.",
+  "description": "Improve PageSpeed and load times for VitePress docs by auto-generating modern, responsive picture elements from local Markdown images.",
   "type": "module",
   "license": "MIT",
   "author": "Shisheng Kai",
@@ -21,6 +21,9 @@
     "picture",
     "webp",
     "avif",
+    "pagespeed",
+    "lighthouse",
+    "core-web-vitals",
     "sharp",
     "markdown-it"
   ],

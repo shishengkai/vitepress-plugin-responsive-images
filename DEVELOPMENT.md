@@ -4,7 +4,9 @@ This document is the implementation handoff for Cursor agents working on `vitepr
 
 ## Product Goal
 
-Build a VitePress plugin that lets authors keep writing normal Markdown image syntax while build-time tooling generates responsive image variants and rewrites local Markdown images into `<picture>` markup.
+Build a VitePress plugin that improves real-world page performance — PageSpeed Insights scores, load time, reader experience, and SEO-friendly image delivery — by letting authors keep writing normal Markdown image syntax while build-time tooling generates modern, appropriately sized image variants and rewrites local images into `<picture>` markup.
+
+The typical trigger is a Lighthouse or PageSpeed audit flagging two problems on documentation images: legacy formats (PNG/JPEG only) and files larger than their displayed size. This plugin addresses both without a separate image pipeline or manual `<picture>` authoring.
 
 The project must be globally usable. All repository content, code comments, docs, examples, issue templates, release notes, and package metadata must be written in English.
 
