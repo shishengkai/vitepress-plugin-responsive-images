@@ -52,6 +52,36 @@ describe('VitePress integration', () => {
     expect([...runtime.manifest.values()].some((entry) => entry.source === './images/dashboard.png')).toBe(true)
   })
 
+  it('supports original-size format conversion without resized variants', async () => {
+    const { runtime, vitePlugin } = createResponsiveImagesPlugins({
+      widths: [0],
+      defaultWidth: 0,
+      formats: ['webp']
+    })
+
+    const config = {
+      root: docsRoot,
+      base: '/',
+      cacheDir: path.join(docsRoot, '.vitepress', 'cache'),
+      build: {
+        outDir: path.join(docsRoot, '.vitepress', 'dist')
+      }
+    } as ResolvedConfig
+
+    if (typeof vitePlugin.configResolved !== 'function') {
+      throw new Error('Expected configResolved hook to be defined.')
+    }
+
+    await (vitePlugin.configResolved as unknown as (config: ResolvedConfig) => void | Promise<void>)(config)
+
+    const entry = [...runtime.manifest.values()].find((manifestEntry) => manifestEntry.source === './images/dashboard.png')
+
+    expect(entry?.displayWidth).toBe(1200)
+    expect(entry?.displayHeight).toBe(600)
+    expect(entry?.sources.webp?.map((candidate) => candidate.width)).toEqual([1200])
+    expect(entry?.fallback.candidates.map((candidate) => candidate.width)).toEqual([1200])
+  })
+
   it('builds picture markup and generated assets', async () => {
     await execFileAsync('npx', ['vitepress', 'build', 'docs'], {
       cwd: fixtureRoot,

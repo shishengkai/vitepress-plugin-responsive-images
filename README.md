@@ -76,6 +76,31 @@ export default withResponsiveImages(
 
 ## Configuration
 
+### Responsive widths
+
+Use `widths` to choose the generated responsive image widths. Use `0` when you want to keep the original image size and only convert formats.
+
+| Value | Generates | When to use |
+| --- | --- | --- |
+| `[480, 720, 960, 1440]` (default) | Responsive resized variants | General documentation images |
+| `[0]` | Original-size variants only | Format conversion without resizing |
+| `[480, 720, 0]` | Resized variants plus original-size variant | Responsive images that can still use the original file width |
+
+When using original-size-only output, pair it with `defaultWidth: 0` if the rendered `<img width>` and `<img height>` should also use the source image dimensions:
+
+```ts
+export default withResponsiveImages(
+  defineConfig({
+    title: 'My Docs'
+  }),
+  {
+    widths: [0],
+    defaultWidth: 0,
+    formats: ['avif', 'webp']
+  }
+)
+```
+
 ### Modern formats
 
 Use `formats` to choose which modern image variants are generated for `<picture><source>` entries. JPG/PNG fallback is always kept for older browsers.
@@ -103,6 +128,7 @@ formats: ['avif']
 interface ResponsiveImagesOptions {
   widths?: number[]
   formats?: Array<'webp' | 'avif'>
+  defaultWidth?: number
   sizes?: string
   outputDir?: string
   include?: string[]

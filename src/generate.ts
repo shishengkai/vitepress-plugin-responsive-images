@@ -5,6 +5,7 @@ import sharp from 'sharp'
 import type { ImageCandidate, ManifestEntry, OutputFormat, RuntimeState } from './types'
 import type { ResolvedImage } from './path'
 import { joinUrl, normalizePath } from './path'
+import { ORIGINAL_SIZE_WIDTH } from './config'
 
 export async function generateImage(runtime: RuntimeState, image: ResolvedImage): Promise<ManifestEntry> {
   const sourceBuffer = await fs.readFile(image.sourcePath)
@@ -31,7 +32,8 @@ export async function generateImage(runtime: RuntimeState, image: ResolvedImage)
   const fallbackCandidates = await Promise.all(
     widths.map((width) => writeVariant(runtime, sourceBuffer, baseName, hash, width, fallbackFormat))
   )
-  const displayWidth = Math.min(metadata.width, runtime.options.defaultWidth)
+  const displayWidth =
+    runtime.options.defaultWidth === ORIGINAL_SIZE_WIDTH ? metadata.width : Math.min(metadata.width, runtime.options.defaultWidth)
   const displayHeight = Math.round((displayWidth / metadata.width) * metadata.height)
   const fallbackSrc = chooseDefaultCandidate(fallbackCandidates, displayWidth).url
 
@@ -86,7 +88,10 @@ async function writeVariant(
 }
 
 function selectWidths(widths: number[], sourceWidth: number): number[] {
-  const selected = widths.filter((width) => width <= sourceWidth)
+  const selected = Array.from(
+    new Set(widths.map((width) => (width === ORIGINAL_SIZE_WIDTH ? sourceWidth : width)).filter((width) => width <= sourceWidth))
+  ).sort((a, b) => a - b)
+
   return selected.length > 0 ? selected : [sourceWidth]
 }
 

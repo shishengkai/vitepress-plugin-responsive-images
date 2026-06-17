@@ -1,6 +1,7 @@
 import type { NormalizedOptions, OutputFormat, ResponsiveImagesOptions } from './types'
 
 const FORMAT_ORDER: OutputFormat[] = ['avif', 'webp']
+export const ORIGINAL_SIZE_WIDTH = 0
 
 const defaultOptions: NormalizedOptions = {
   widths: [480, 720, 960, 1440],
@@ -24,12 +25,11 @@ const defaultOptions: NormalizedOptions = {
 }
 
 export function normalizeOptions(options: ResponsiveImagesOptions = {}): NormalizedOptions {
-  const widths = Array.from(new Set(options.widths ?? defaultOptions.widths))
-    .filter((width) => Number.isInteger(width) && width > 0)
-    .sort((a, b) => a - b)
+  const widths = normalizeWidths(options.widths)
+  const defaultWidth = normalizeDefaultWidth(options.defaultWidth)
 
   if (widths.length === 0) {
-    throw new Error('vitepress-plugin-responsive-images: at least one positive width is required.')
+    throw new Error('vitepress-plugin-responsive-images: at least one non-negative width is required.')
   }
 
   const formats = normalizeFormats(options.formats)
@@ -38,6 +38,7 @@ export function normalizeOptions(options: ResponsiveImagesOptions = {}): Normali
     ...defaultOptions,
     ...options,
     widths,
+    defaultWidth,
     formats,
     quality: {
       ...defaultOptions.quality,
@@ -48,6 +49,22 @@ export function normalizeOptions(options: ResponsiveImagesOptions = {}): Normali
     skipFormats: (options.skipFormats ?? defaultOptions.skipFormats).map((format) => format.toLowerCase()),
     outputDir: stripSlashes(options.outputDir ?? defaultOptions.outputDir)
   }
+}
+
+export function normalizeWidths(widths: ResponsiveImagesOptions['widths']): number[] {
+  return Array.from(new Set(widths ?? defaultOptions.widths))
+    .filter((width) => Number.isInteger(width) && width >= ORIGINAL_SIZE_WIDTH)
+    .sort((a, b) => a - b)
+}
+
+function normalizeDefaultWidth(defaultWidth: ResponsiveImagesOptions['defaultWidth']): number {
+  const normalizedDefaultWidth = defaultWidth ?? defaultOptions.defaultWidth
+
+  if (!Number.isInteger(normalizedDefaultWidth) || normalizedDefaultWidth < ORIGINAL_SIZE_WIDTH) {
+    throw new Error('vitepress-plugin-responsive-images: defaultWidth must be a non-negative integer.')
+  }
+
+  return normalizedDefaultWidth
 }
 
 function stripSlashes(value: string): string {

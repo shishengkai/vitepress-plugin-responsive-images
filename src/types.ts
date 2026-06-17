@@ -11,6 +11,15 @@ export interface FormatQuality {
 }
 
 export interface ResponsiveImagesOptions {
+  /**
+   * Responsive image candidate widths.
+   *
+   * The default is `[480, 720, 960, 1440]`.
+   * Use `0` to include the original source width without resizing.
+   *
+   * @example widths: [0]
+   * @example widths: [480, 720, 0]
+   */
   widths?: number[]
   /**
    * Modern image formats to generate for `<picture><source>` entries.
@@ -31,6 +40,12 @@ export interface ResponsiveImagesOptions {
   skipFormats?: string[]
   failOnError?: boolean
   debug?: boolean
+  /**
+   * The rendered `<img width>` value.
+   *
+   * The default is `720`.
+   * Use `0` to render the original source width and height.
+   */
   defaultWidth?: number
 }
 
