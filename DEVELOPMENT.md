@@ -24,13 +24,16 @@ The project must be globally usable. All repository content, code comments, docs
 
 ```mermaid
 flowchart TD
-  author[Author writes Markdown] --> scanner[Build-time Markdown scanner]
+  author[Author writes Markdown] --> discover[Image discovery]
+  discover --> scanner[Build-time Markdown scanner]
   scanner --> resolver[Local image resolver]
   resolver --> sharp[Sharp image generator]
   sharp --> cache[Generated image cache]
   sharp --> manifest[Manifest]
-  manifest --> renderer[markdown-it image renderer]
-  renderer --> picture[Responsive picture HTML]
+  manifest --> imageRenderer[markdown-it image renderer]
+  manifest --> htmlRenderer[markdown-it html renderer]
+  imageRenderer --> picture[Responsive picture HTML]
+  htmlRenderer --> picture
   cache --> dev[Dev middleware]
   cache --> build[Copied build assets]
 ```
@@ -78,6 +81,9 @@ VitePress 2 uses async markdown rendering internally. This plugin avoids direct 
 ## Implementation Notes
 
 - Scanner finds Markdown files through `tinyglobby`.
+- Image discovery collects inline Markdown images, reference-style image definitions, and handwritten HTML `<img>` tags from Markdown file content.
+- Reference-style images are discovered from same-file reference definitions such as `[logo]: ./logo.png`; markdown-it resolves the rendered `src` during Markdown rendering.
+- Handwritten HTML images are rewritten through markdown-it `html_block` and `html_inline` renderer hooks.
 - Resolver handles relative Markdown paths, root public paths, and `@/` source-root paths.
 - Generated images go to Vite/VitePress cache during dev and are copied to `outDir/_responsive-images` for builds.
 - Cache invalidation tracks a fingerprint of `widths`, `formats`, and `quality`, then prunes unreferenced files after each manifest rebuild.
@@ -86,6 +92,8 @@ VitePress 2 uses async markdown rendering internally. This plugin avoids direct 
 - Manifest keys are stable: `normalizedMarkdownPath::rawSource`.
 - Rendered URLs must respect `base`.
 - The markdown renderer must fall back to VitePress default image rendering when an image is skipped or missing from the manifest.
+- Handwritten HTML `<img>` tags inside existing `<picture>` elements are left unchanged.
+- Per-image opt-out, theme hero images, and Vue component images are out of scope for v0.3.0.
 
 ## Release Preparation
 

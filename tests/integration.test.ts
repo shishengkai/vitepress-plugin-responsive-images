@@ -121,6 +121,31 @@ describe('VitePress integration', () => {
     expect(webpStats.isFile()).toBe(true)
   })
 
+  it('discovers reference and html image sources from fixture pages', async () => {
+    const { runtime, vitePlugin } = createResponsiveImagesPlugins({
+      widths: [480, 720],
+      formats: ['webp']
+    })
+
+    const config = {
+      root: docsRoot,
+      base: '/',
+      cacheDir: path.join(docsRoot, '.vitepress', 'cache'),
+      build: {
+        outDir: path.join(docsRoot, '.vitepress', 'dist')
+      }
+    } as ResolvedConfig
+
+    if (typeof vitePlugin.configResolved !== 'function') {
+      throw new Error('Expected configResolved hook to be defined.')
+    }
+
+    await (vitePlugin.configResolved as unknown as (config: ResolvedConfig) => void | Promise<void>)(config)
+
+    expect([...runtime.manifest.values()].some((entry) => entry.source === './images/dashboard.png')).toBe(true)
+    expect(runtime.manifest.size).toBeGreaterThanOrEqual(3)
+  })
+
   it('builds picture markup and generated assets', async () => {
     await execFileAsync('npx', ['vitepress', 'build', 'docs'], {
       cwd: fixtureRoot,
@@ -139,6 +164,15 @@ describe('VitePress integration', () => {
     expect(html).toContain('dashboard')
     expect(generatedAssets.some((asset) => asset.endsWith('.webp'))).toBe(true)
     expect(generatedAssets.some((asset) => asset.endsWith('.png'))).toBe(true)
+
+    const referenceHtml = await fs.readFile(path.join(docsRoot, '.vitepress', 'dist', 'reference.html'), 'utf8')
+    const htmlImageHtml = await fs.readFile(path.join(docsRoot, '.vitepress', 'dist', 'html-image.html'), 'utf8')
+
+    expect(referenceHtml).toContain('<picture>')
+    expect(referenceHtml).toContain('Dashboard screenshot')
+    expect(htmlImageHtml).toContain('<picture>')
+    expect(htmlImageHtml).toContain('class="demo-img"')
+    expect(htmlImageHtml).toContain('Dashboard HTML')
   })
 
   it('clears stale cache when generation options change', async () => {

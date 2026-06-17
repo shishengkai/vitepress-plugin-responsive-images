@@ -1,19 +1,22 @@
 import type MarkdownIt from 'markdown-it'
 import type Renderer from 'markdown-it/lib/renderer.mjs'
 import type Token from 'markdown-it/lib/token.mjs'
+import { transformHtmlImageTags } from './htmlTransform'
 import type { RuntimeState } from './types'
 import { getMarkdownPathFromEnv, resolveImageSource } from './path'
 import { renderPicture } from './render'
 
 export function responsiveImagesMarkdownPlugin(runtime: RuntimeState): (md: MarkdownIt) => void {
   return (md) => {
-    const defaultRender = md.renderer.rules.image ?? ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+    const defaultImageRender = md.renderer.rules.image ?? ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+    const defaultHtmlBlockRender = md.renderer.rules.html_block ?? ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
+    const defaultHtmlInlineRender = md.renderer.rules.html_inline ?? ((tokens, idx, options, _env, self) => self.renderToken(tokens, idx, options))
 
     md.renderer.rules.image = (tokens, idx, options, env, self) => {
       const token = tokens[idx]
       const source = token.attrGet('src')
 
-      if (!source) return defaultRender(tokens, idx, options, env, self)
+      if (!source) return defaultImageRender(tokens, idx, options, env, self)
 
       const markdownPath = getMarkdownPathFromEnv(runtime.root, env)
       const resolved = resolveImageSource({
@@ -25,12 +28,22 @@ export function responsiveImagesMarkdownPlugin(runtime: RuntimeState): (md: Mark
 
       const entry = resolved ? runtime.manifest.get(resolved.key) : undefined
 
-      if (!entry) return defaultRender(tokens, idx, options, env, self)
+      if (!entry) return defaultImageRender(tokens, idx, options, env, self)
 
       return renderPicture(entry, runtime.options, {
         alt: renderAlt(token, options, env, self),
         title: token.attrGet('title') ?? undefined
       })
+    }
+
+    md.renderer.rules.html_block = (tokens, idx, options, env, self) => {
+      const html = defaultHtmlBlockRender(tokens, idx, options, env, self)
+      return transformHtmlImageTags(html, runtime, env)
+    }
+
+    md.renderer.rules.html_inline = (tokens, idx, options, env, self) => {
+      const html = defaultHtmlInlineRender(tokens, idx, options, env, self)
+      return transformHtmlImageTags(html, runtime, env)
     }
   }
 }

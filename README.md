@@ -68,9 +68,9 @@ export default withResponsiveImages(
 
 ## Defaults
 
-- Processes local Markdown images written as `![]()`.
+- Processes local images from Markdown inline images `![]()`, reference-style images `![alt][ref]`, and handwritten HTML `<img src="...">` tags in Markdown files.
 - Processes Sharp-readable local images with file extensions.
-- Skips remote URLs, data URLs, SVG, GIF, Vue components, theme images, CSS backgrounds, and handwritten HTML images.
+- Skips remote URLs, data URLs, SVG, GIF, Vue components, theme images, CSS backgrounds, and `<img>` tags already inside `<picture>`.
 - Generates AVIF + WebP modern sources, with JPG/PNG fallback.
 - Avoids upscaling images.
 - Adds `loading="lazy"` and `decoding="async"` by default.
@@ -228,6 +228,30 @@ interface ResponsiveImagesOptions {
   injectStyles?: boolean
 }
 ```
+
+## Supported Markdown image syntax
+
+Inline Markdown:
+
+```md
+![Dashboard screenshot](./images/dashboard.png)
+```
+
+Reference-style Markdown:
+
+```md
+![Architecture diagram][arch]
+
+[arch]: ./images/architecture.png "Architecture"
+```
+
+Handwritten HTML in Markdown:
+
+```html
+<img src="./images/hero.png" alt="Hero" class="rounded">
+```
+
+Handwritten HTML keeps existing attributes such as `class`, `style`, `loading`, and `decoding` on the rendered fallback `<img>` element.
 
 ## Page opt-out
 

@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises'
-import path from 'node:path'
 import { glob } from 'tinyglobby'
+import { discoverImageReferences } from './discover'
 import type { RuntimeState } from './types'
 import { ensureCacheMatchesOptions, pruneStaleCacheFiles } from './cache'
 import { normalizePath, resolveImageSource } from './path'
 import { generateImage } from './generate'
 
-const markdownImagePattern = /!\[[^\]]*\]\(([^\s)]+)(?:\s+["'][^"']*["'])?\)/g
+export { extractInlineMarkdownImages as extractMarkdownImageSources } from './discover'
 
 export async function buildManifest(runtime: RuntimeState): Promise<void> {
   await ensureCacheMatchesOptions(runtime)
@@ -32,11 +32,11 @@ async function scanMarkdownFile(runtime: RuntimeState, markdownPath: string): Pr
 
   if (hasResponsiveImagesDisabled(content)) return
 
-  for (const source of extractMarkdownImageSources(content)) {
+  for (const reference of discoverImageReferences(content)) {
     const resolved = resolveImageSource({
       root: runtime.root,
       markdownPath,
-      source,
+      source: reference.source,
       skipFormats: runtime.options.skipFormats
     })
 
@@ -55,19 +55,6 @@ async function scanMarkdownFile(runtime: RuntimeState, markdownPath: string): Pr
       }
     }
   }
-}
-
-export function extractMarkdownImageSources(content: string): string[] {
-  const sources: string[] = []
-  let match: RegExpExecArray | null
-
-  markdownImagePattern.lastIndex = 0
-  while ((match = markdownImagePattern.exec(content))) {
-    const source = match[1]?.trim()
-    if (source) sources.push(source)
-  }
-
-  return sources
 }
 
 function hasResponsiveImagesDisabled(content: string): boolean {
