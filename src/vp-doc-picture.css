@@ -1,0 +1,9 @@
+.vp-doc picture {
+  display: block;
+}
+
+.vp-doc picture > img,
+.vp-doc img {
+  max-width: 100%;
+  height: auto;
+}

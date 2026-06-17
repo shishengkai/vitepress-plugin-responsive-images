@@ -22,7 +22,8 @@ const defaultOptions: NormalizedOptions = {
   skipFormats: ['svg', 'gif'],
   failOnError: false,
   debug: false,
-  defaultWidth: 720
+  defaultWidth: 720,
+  injectStyles: true
 }
 
 export function normalizeOptions(options: ResponsiveImagesOptions = {}): NormalizedOptions {

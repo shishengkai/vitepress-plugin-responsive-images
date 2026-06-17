@@ -61,3 +61,10 @@ describe('normalizeQuality', () => {
     expect(() => normalizeQuality({ avif: 101 })).toThrow(/quality\.avif/)
   })
 })
+
+describe('injectStyles', () => {
+  it('defaults to injecting layout styles', () => {
+    expect(normalizeOptions().injectStyles).toBe(true)
+    expect(normalizeOptions({ injectStyles: false }).injectStyles).toBe(false)
+  })
+})

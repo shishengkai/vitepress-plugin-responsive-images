@@ -3,6 +3,7 @@ import type { Plugin as VitePlugin } from 'vite'
 import type { ResponsiveImagesOptions, RuntimeState } from './types'
 import { createRuntime } from './runtime'
 import { responsiveImagesMarkdownPlugin } from './markdownPlugin'
+import { responsiveImagesHeadConfig } from './styles'
 import { responsiveImagesVitePlugin } from './vitePlugin'
 
 export type { ResponsiveImagesOptions } from './types'
@@ -15,13 +16,15 @@ export function createResponsiveImagesPlugins(options: ResponsiveImagesOptions =
   runtime: RuntimeState
   markdownPlugin: (md: MarkdownIt) => void
   vitePlugin: VitePlugin
+  head: Array<[string, Record<string, string>, string]>
 } {
   const runtime = createRuntime(options)
 
   return {
     runtime,
     markdownPlugin: responsiveImagesMarkdownPlugin(runtime),
-    vitePlugin: responsiveImagesVitePlugin(runtime)
+    vitePlugin: responsiveImagesVitePlugin(runtime),
+    head: runtime.options.injectStyles ? [responsiveImagesHeadConfig()] : []
   }
 }
 
@@ -40,6 +43,9 @@ export function withResponsiveImages<T>(config: T, options: ResponsiveImagesOpti
   const previousMarkdownConfig = markdown.config
 
   vite.plugins = [...toArray(vite.plugins), plugins.vitePlugin]
+  if (plugins.head.length > 0) {
+    userConfig.head = [...toArray(userConfig.head), ...plugins.head]
+  }
   markdown.config = (...args: unknown[]) => {
     if (typeof previousMarkdownConfig === 'function') {
       previousMarkdownConfig(...args)

@@ -59,6 +59,13 @@ export interface ResponsiveImagesOptions {
    * Use `0` to render the original source width and height.
    */
   defaultWidth?: number
+  /**
+   * Inject default VitePress doc layout styles for `<picture>` and `<img>` elements.
+   *
+   * The default is `true`. Set to `false` when your theme already provides equivalent
+   * rules or when you import `vitepress-plugin-responsive-images/vp-doc-picture.css` manually.
+   */
+  injectStyles?: boolean
 }
 
 export interface NormalizedOptions {
@@ -76,6 +83,7 @@ export interface NormalizedOptions {
   failOnError: boolean
   debug: boolean
   defaultWidth: number
+  injectStyles: boolean
 }
 
 export interface ImageCandidate {

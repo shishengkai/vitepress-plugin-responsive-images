@@ -34,12 +34,13 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./vp-doc-picture.css": "./dist/vp-doc-picture.css"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
+    "build": "tsup src/index.ts --format esm --dts --clean && cp src/vp-doc-picture.css dist/vp-doc-picture.css",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",

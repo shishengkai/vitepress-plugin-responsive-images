@@ -73,6 +73,7 @@ export default withResponsiveImages(
 - Generates AVIF + WebP modern sources, with original-format JPG/PNG fallback.
 - Avoids upscaling images.
 - Adds `loading="lazy"` and `decoding="async"` by default.
+- Injects default `.vp-doc` layout styles for `<picture>` and `<img>` elements.
 
 ## Configuration
 
@@ -152,6 +153,37 @@ export default withResponsiveImages(
 )
 ```
 
+### Layout styles
+
+VitePress does not ship layout rules for `<picture>` elements. By default, this plugin adds them through VitePress `head` config as a small scoped stylesheet:
+
+```css
+.vp-doc picture { display: block; }
+.vp-doc picture > img,
+.vp-doc img { max-width: 100%; height: auto; }
+```
+
+Disable automatic injection when your theme already provides equivalent rules:
+
+```ts
+export default withResponsiveImages(
+  defineConfig({
+    title: 'My Docs'
+  }),
+  {
+    injectStyles: false
+  }
+)
+```
+
+You can also import the stylesheet manually:
+
+```ts
+import 'vitepress-plugin-responsive-images/vp-doc-picture.css'
+```
+
+Custom themes that do not use the `.vp-doc` wrapper should provide their own layout rules.
+
 ```ts
 interface ResponsiveImagesOptions {
   widths?: number[]
@@ -171,6 +203,7 @@ interface ResponsiveImagesOptions {
   decoding?: 'async' | 'sync' | 'auto' | false
   failOnError?: boolean
   debug?: boolean
+  injectStyles?: boolean
 }
 ```
 
