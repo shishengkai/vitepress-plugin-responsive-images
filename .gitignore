@@ -4,6 +4,7 @@ Drafts
 dist
 coverage
 *.log
+.cache-test
 .vitepress/cache
 .vitepress/dist
 tests/fixtures/**/docs/.vitepress/cache

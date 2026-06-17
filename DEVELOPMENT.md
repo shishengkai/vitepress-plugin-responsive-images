@@ -55,7 +55,7 @@ Lower-level API:
 ```ts
 import { createResponsiveImagesPlugins } from 'vitepress-plugin-responsive-images'
 
-const { markdownPlugin, vitePlugin } = createResponsiveImagesPlugins()
+const { markdownPlugin, vitePlugin, head } = createResponsiveImagesPlugins()
 ```
 
 ## Compatibility Strategy
@@ -80,6 +80,9 @@ VitePress 2 uses async markdown rendering internally. This plugin avoids direct 
 - Scanner finds Markdown files through `tinyglobby`.
 - Resolver handles relative Markdown paths, root public paths, and `@/` source-root paths.
 - Generated images go to Vite/VitePress cache during dev and are copied to `outDir/_responsive-images` for builds.
+- Cache invalidation tracks a fingerprint of `widths`, `formats`, and `quality`, then prunes unreferenced files after each manifest rebuild.
+- Production builds replace the output image directory with only manifest-referenced files.
+- Default `.vp-doc` layout styles are injected through VitePress `head` config unless `injectStyles: false`.
 - Manifest keys are stable: `normalizedMarkdownPath::rawSource`.
 - Rendered URLs must respect `base`.
 - The markdown renderer must fall back to VitePress default image rendering when an image is skipped or missing from the manifest.
