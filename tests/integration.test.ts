@@ -45,7 +45,7 @@ describe('VitePress integration', () => {
       throw new Error('Expected configResolved hook to be defined.')
     }
 
-    await vitePlugin.configResolved(config)
+    await (vitePlugin.configResolved as unknown as (config: ResolvedConfig) => void | Promise<void>)(config)
 
     expect(runtime.built).toBe(true)
     expect(runtime.manifest.size).toBeGreaterThan(0)

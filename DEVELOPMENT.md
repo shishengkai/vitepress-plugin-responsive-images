@@ -90,6 +90,8 @@ VitePress 2 uses async markdown rendering internally. This plugin avoids direct 
 - npm package: `vitepress-plugin-responsive-images`
 - npm Trusted Publishing is configured for the GitHub Actions release workflow.
 - Releases are managed with Changesets.
+- The release workflow uses `CHANGESETS_TOKEN` for GitHub PR, tag, and release writes because the repository owner disables write permissions for the default `GITHUB_TOKEN`.
+- `CHANGESETS_TOKEN` should be a fine-grained GitHub token with access to this repository and these permissions: Contents read/write, Pull requests read/write, and Metadata read-only.
 - User-facing changes should include a changeset from `npm run changeset`.
 - Pushing changesets to `main` creates a `Version Packages` pull request.
 - Merging the version pull request publishes to npm and creates the GitHub release through Trusted Publishing.

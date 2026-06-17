@@ -29,5 +29,6 @@ jobs:
           publish: npm run release
           title: Version Packages
           commit: Version Packages
+          github-token: ${{ secrets.CHANGESETS_TOKEN }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CHANGESETS_TOKEN }}
