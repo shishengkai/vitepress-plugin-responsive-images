@@ -1,5 +1,11 @@
 # vitepress-plugin-responsive-images
 
+## 0.3.2
+
+### Patch Changes
+
+- [`7b21afc`](https://github.com/shishengkai/vitepress-plugin-responsive-images/commit/7b21afc886e199e7f86de457add68734047cb285) Thanks [@AaronJiTuo](https://github.com/AaronJiTuo)! - Clean up repository documentation by replacing the development handoff with CONTRIBUTING.md and removing the stale root docs stub.
+
 ## 0.3.1
 
 ### Patch Changes
