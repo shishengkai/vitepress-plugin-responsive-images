@@ -2,6 +2,9 @@ name: Release
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'v*.*.*'
 
 permissions:
   contents: write
@@ -16,7 +19,6 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          registry-url: https://registry.npmjs.org
       - run: npm ci
       - run: npm run typecheck
       - run: npm run test
