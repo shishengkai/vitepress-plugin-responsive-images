@@ -1,6 +1,6 @@
 {
   "name": "vitepress-plugin-responsive-images",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "$schema": "https://raw.githubusercontent.com/vitejs/vite-plugin-registry/refs/heads/main/data/schema/extended-package-json.schema.json",
   "description": "Improve PageSpeed and load times for VitePress docs by auto-generating modern, responsive picture elements from local Markdown images.",
   "type": "module",

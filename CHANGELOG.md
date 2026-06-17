@@ -1,5 +1,11 @@
 # vitepress-plugin-responsive-images
 
+## 0.3.3
+
+### Patch Changes
+
+- [`df4c2fd`](https://github.com/shishengkai/vitepress-plugin-responsive-images/commit/df4c2fd88519f7f3c20572902520b026de7adc46) Thanks [@AaronJiTuo](https://github.com/AaronJiTuo)! - Add `vite-plugin` keyword and `compatiblePackages` metadata for Vite Plugin Registry discovery and compatibility display.
+
 ## 0.3.2
 
 ### Patch Changes
