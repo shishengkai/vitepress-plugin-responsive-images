@@ -1,5 +1,11 @@
 # vitepress-plugin-responsive-images
 
+## 0.3.1
+
+### Patch Changes
+
+- [`32fdbc6`](https://github.com/shishengkai/vitepress-plugin-responsive-images/commit/32fdbc66b81a834443c074f4fbd88b65a9dce203) Thanks [@AaronJiTuo](https://github.com/AaronJiTuo)! - Document the PageSpeed and Lighthouse performance motivation behind modern formats and responsive image delivery.
+
 ## 0.3.0
 
 ### Minor Changes
