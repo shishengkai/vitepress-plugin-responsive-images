@@ -2,6 +2,7 @@ import type { NormalizedOptions, OutputFormat, ResponsiveImagesOptions } from '.
 
 const FORMAT_ORDER: OutputFormat[] = ['avif', 'webp']
 export const ORIGINAL_SIZE_WIDTH = 0
+export const LOSSLESS_QUALITY = -1
 
 const defaultOptions: NormalizedOptions = {
   widths: [480, 720, 960, 1440],
@@ -27,6 +28,7 @@ const defaultOptions: NormalizedOptions = {
 export function normalizeOptions(options: ResponsiveImagesOptions = {}): NormalizedOptions {
   const widths = normalizeWidths(options.widths)
   const defaultWidth = normalizeDefaultWidth(options.defaultWidth)
+  const quality = normalizeQuality(options.quality)
 
   if (widths.length === 0) {
     throw new Error('vitepress-plugin-responsive-images: at least one non-negative width is required.')
@@ -40,10 +42,7 @@ export function normalizeOptions(options: ResponsiveImagesOptions = {}): Normali
     widths,
     defaultWidth,
     formats,
-    quality: {
-      ...defaultOptions.quality,
-      ...options.quality
-    },
+    quality,
     include: options.include ?? defaultOptions.include,
     exclude: options.exclude ?? defaultOptions.exclude,
     skipFormats: (options.skipFormats ?? defaultOptions.skipFormats).map((format) => format.toLowerCase()),
@@ -65,6 +64,26 @@ function normalizeDefaultWidth(defaultWidth: ResponsiveImagesOptions['defaultWid
   }
 
   return normalizedDefaultWidth
+}
+
+export function normalizeQuality(quality: ResponsiveImagesOptions['quality']): NormalizedOptions['quality'] {
+  const normalizedQuality = {
+    ...defaultOptions.quality,
+    ...quality
+  }
+
+  validateModernQuality('webp', normalizedQuality.webp)
+  validateModernQuality('avif', normalizedQuality.avif)
+
+  return normalizedQuality
+}
+
+function validateModernQuality(format: OutputFormat, quality: number): void {
+  if (!Number.isInteger(quality) || quality < LOSSLESS_QUALITY || quality === 0 || quality > 100) {
+    throw new Error(
+      `vitepress-plugin-responsive-images: quality.${format} must be -1 for lossless or an integer from 1 to 100.`
+    )
+  }
 }
 
 function stripSlashes(value: string): string {

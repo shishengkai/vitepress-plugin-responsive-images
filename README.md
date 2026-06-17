@@ -124,6 +124,34 @@ formats: ['webp']
 formats: ['avif']
 ```
 
+### Quality
+
+Use `quality` to tune encoder output. WebP and AVIF can be generated in Sharp's lossless mode by setting their quality value to `-1`.
+
+| Value | Meaning |
+| --- | --- |
+| `quality.webp: 80` (default) | Lossy WebP quality 80 |
+| `quality.webp: 100` | Maximum lossy WebP quality |
+| `quality.webp: -1` | Lossless WebP via `webp({ lossless: true })` |
+| `quality.avif: 50` (default) | Lossy AVIF quality 50 |
+| `quality.avif: 100` | Maximum lossy AVIF quality |
+| `quality.avif: -1` | Lossless AVIF via `avif({ lossless: true })` |
+
+```ts
+export default withResponsiveImages(
+  defineConfig({
+    title: 'My Docs'
+  }),
+  {
+    formats: ['avif', 'webp'],
+    quality: {
+      avif: -1,
+      webp: -1
+    }
+  }
+)
+```
+
 ```ts
 interface ResponsiveImagesOptions {
   widths?: number[]
@@ -134,8 +162,8 @@ interface ResponsiveImagesOptions {
   include?: string[]
   exclude?: string[]
   quality?: {
-    webp?: number
-    avif?: number
+    webp?: number // -1 enables lossless WebP; 1..100 uses lossy quality
+    avif?: number // -1 enables lossless AVIF; 1..100 uses lossy quality
     jpeg?: number
     png?: number
   }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { normalizeFormats, normalizeOptions, normalizeWidths } from '../src/config'
+import { normalizeFormats, normalizeOptions, normalizeQuality, normalizeWidths } from '../src/config'
 
 describe('normalizeFormats', () => {
   it('defaults to AVIF and WebP', () => {
@@ -32,5 +32,32 @@ describe('normalizeWidths', () => {
   it('rejects negative widths and defaultWidth values', () => {
     expect(() => normalizeOptions({ widths: [-1] })).toThrow(/at least one non-negative width/)
     expect(() => normalizeOptions({ defaultWidth: -1 })).toThrow(/defaultWidth must be a non-negative integer/)
+  })
+})
+
+describe('normalizeQuality', () => {
+  it('allows lossless modern format sentinel quality', () => {
+    expect(normalizeQuality({ webp: -1 }).webp).toBe(-1)
+    expect(normalizeQuality({ avif: -1 }).avif).toBe(-1)
+    expect(normalizeOptions({ quality: { webp: -1, avif: -1 } }).quality).toMatchObject({
+      webp: -1,
+      avif: -1
+    })
+  })
+
+  it('allows lossy modern format quality values from 1 to 100', () => {
+    expect(normalizeQuality({ webp: 1 }).webp).toBe(1)
+    expect(normalizeQuality({ webp: 100 }).webp).toBe(100)
+    expect(normalizeQuality({ avif: 1 }).avif).toBe(1)
+    expect(normalizeQuality({ avif: 100 }).avif).toBe(100)
+  })
+
+  it('rejects unsupported modern format quality values', () => {
+    expect(() => normalizeQuality({ webp: -2 })).toThrow(/quality\.webp/)
+    expect(() => normalizeQuality({ webp: 0 })).toThrow(/quality\.webp/)
+    expect(() => normalizeQuality({ webp: 101 })).toThrow(/quality\.webp/)
+    expect(() => normalizeQuality({ avif: -2 })).toThrow(/quality\.avif/)
+    expect(() => normalizeQuality({ avif: 0 })).toThrow(/quality\.avif/)
+    expect(() => normalizeQuality({ avif: 101 })).toThrow(/quality\.avif/)
   })
 })

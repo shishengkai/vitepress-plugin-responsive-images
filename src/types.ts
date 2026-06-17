@@ -4,7 +4,19 @@ export type LoadingValue = 'lazy' | 'eager' | false
 export type DecodingValue = 'async' | 'sync' | 'auto' | false
 
 export interface FormatQuality {
+  /**
+   * WebP quality.
+   *
+   * Use an integer from `1` to `100` for lossy WebP.
+   * Use `-1` to enable Sharp's `webp({ lossless: true })` mode.
+   */
   webp: number
+  /**
+   * AVIF quality.
+   *
+   * Use an integer from `1` to `100` for lossy AVIF.
+   * Use `-1` to enable Sharp's `avif({ lossless: true })` mode.
+   */
   avif: number
   jpeg: number
   png?: number

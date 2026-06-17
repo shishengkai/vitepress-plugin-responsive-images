@@ -82,6 +82,45 @@ describe('VitePress integration', () => {
     expect(entry?.fallback.candidates.map((candidate) => candidate.width)).toEqual([1200])
   })
 
+  it('supports lossless modern format output', async () => {
+    const { runtime, vitePlugin } = createResponsiveImagesPlugins({
+      widths: [0],
+      formats: ['avif', 'webp'],
+      quality: {
+        avif: -1,
+        webp: -1
+      }
+    })
+
+    const config = {
+      root: docsRoot,
+      base: '/',
+      cacheDir: path.join(docsRoot, '.vitepress', 'cache'),
+      build: {
+        outDir: path.join(docsRoot, '.vitepress', 'dist')
+      }
+    } as ResolvedConfig
+
+    if (typeof vitePlugin.configResolved !== 'function') {
+      throw new Error('Expected configResolved hook to be defined.')
+    }
+
+    await (vitePlugin.configResolved as unknown as (config: ResolvedConfig) => void | Promise<void>)(config)
+
+    const entry = [...runtime.manifest.values()].find((manifestEntry) => manifestEntry.source === './images/dashboard.png')
+    const avifPath = entry?.sources.avif?.[0]?.path
+    const webpPath = entry?.sources.webp?.[0]?.path
+
+    expect(avifPath).toBeDefined()
+    expect(avifPath).toContain('avif-lossless')
+    expect(webpPath).toBeDefined()
+    expect(webpPath).toContain('webp-lossless')
+    const avifStats = await fs.stat(avifPath!)
+    const webpStats = await fs.stat(webpPath!)
+    expect(avifStats.isFile()).toBe(true)
+    expect(webpStats.isFile()).toBe(true)
+  })
+
   it('builds picture markup and generated assets', async () => {
     await execFileAsync('npx', ['vitepress', 'build', 'docs'], {
       cwd: fixtureRoot,
