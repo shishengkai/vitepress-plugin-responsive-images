@@ -121,10 +121,10 @@ function chooseDefaultCandidate(candidates: ImageCandidate[], displayWidth: numb
   return candidates.find((candidate) => candidate.width >= displayWidth) ?? candidates[candidates.length - 1]
 }
 
-function normalizeFallbackFormat(extension: string): 'jpg' | 'jpeg' | 'png' {
+export function normalizeFallbackFormat(extension: string): 'jpg' | 'png' {
   if (extension === 'jpg' || extension === 'jpeg') return 'jpg'
   if (extension === 'png') return 'png'
-  throw new Error(`Unsupported fallback format "${extension}".`)
+  return 'png'
 }
 
 function sanitizeBaseName(value: string): string {

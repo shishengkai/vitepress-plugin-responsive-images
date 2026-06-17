@@ -69,9 +69,9 @@ export default withResponsiveImages(
 ## Defaults
 
 - Processes local Markdown images written as `![]()`.
-- Processes `jpg`, `jpeg`, and `png` by default.
+- Processes Sharp-readable local images with file extensions.
 - Skips remote URLs, data URLs, SVG, GIF, Vue components, theme images, CSS backgrounds, and handwritten HTML images.
-- Generates AVIF + WebP modern sources, with original-format JPG/PNG fallback.
+- Generates AVIF + WebP modern sources, with JPG/PNG fallback.
 - Avoids upscaling images.
 - Adds `loading="lazy"` and `decoding="async"` by default.
 - Injects default `.vp-doc` layout styles for `<picture>` and `<img>` elements.
@@ -154,6 +154,18 @@ export default withResponsiveImages(
   }
 )
 ```
+
+### Fallback format
+
+The fallback `<img>` always uses a broadly compatible JPG or PNG file:
+
+| Source format | Fallback format |
+| --- | --- |
+| `jpg`, `jpeg` | `jpg` |
+| `png` | `png` |
+| Other Sharp-readable formats, such as `webp`, `avif`, `bmp`, or `tiff` | `png` |
+
+Using PNG for non-JPG/PNG inputs preserves transparency and avoids unexpected lossy conversion. It can produce larger fallback files for photo-like images, but modern browsers will usually load the AVIF/WebP `<source>` first.
 
 ### Layout styles
 
