@@ -1,5 +1,11 @@
 # vitepress-plugin-responsive-images
 
+## 0.3.0
+
+### Minor Changes
+
+- [`bfc29c6`](https://github.com/shishengkai/vitepress-plugin-responsive-images/commit/bfc29c6423a6364f5cf0502e84784cb0cafcdb1b) Thanks [@AaronJiTuo](https://github.com/AaronJiTuo)! - Add support for handwritten HTML `<img>` tags and Markdown reference-style images in documentation pages.
+
 ## 0.2.1
 
 ### Patch Changes
