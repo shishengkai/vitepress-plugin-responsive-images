@@ -1,26 +1,25 @@
-# Development Guide
+# Contributing
 
-This document is the implementation handoff for Cursor agents working on `vitepress-plugin-responsive-images`.
+This document is for maintainers and contributors working on `vitepress-plugin-responsive-images`.
 
 ## Product Goal
 
-Build a VitePress plugin that improves real-world page performance — PageSpeed Insights scores, load time, reader experience, and SEO-friendly image delivery — by letting authors keep writing normal Markdown image syntax while build-time tooling generates modern, appropriately sized image variants and rewrites local images into `<picture>` markup.
+Build a VitePress plugin that improves real-world page performance: PageSpeed Insights scores, load time, reader experience, and SEO-friendly image delivery. Authors should be able to keep writing normal Markdown image syntax while build-time tooling generates modern, appropriately sized image variants and rewrites local images into `<picture>` markup.
 
 The typical trigger is a Lighthouse or PageSpeed audit flagging two problems on documentation images: legacy formats (PNG/JPEG only) and files larger than their displayed size. This plugin addresses both without a separate image pipeline or manual `<picture>` authoring.
 
-The project must be globally usable. All repository content, code comments, docs, examples, issue templates, release notes, and package metadata must be written in English.
+The project must be globally usable. All repository content, code comments, docs, examples, issue templates, release notes, and package metadata should be written in English.
 
-## Non-Negotiable Requirements
+## Requirements
 
 - Support VitePress `1.6.x` and `2.0.x` from one package.
 - Treat VitePress `1.6.x` as stable supported.
 - Treat VitePress `2.0.x` as supported and continuously tested, with alpha caveats until VitePress 2 is stable.
 - Do not rely on VitePress internal APIs.
-- Do not do async image work inside the markdown-it image renderer.
+- Do not do async image work inside the markdown-it renderers.
 - Preserve JPG/PNG fallbacks for older browsers.
 - Do not upscale images.
 - Keep default behavior conservative.
-- Keep every repo-facing text artifact in English.
 
 ## Architecture
 
@@ -97,11 +96,12 @@ VitePress 2 uses async markdown rendering internally. This plugin avoids direct 
 - Handwritten HTML `<img>` tags inside existing `<picture>` elements are left unchanged.
 - Per-image opt-out, theme hero images, and Vue component images are out of scope for v0.3.0.
 
-## Release Preparation
+## Release Process
+
+This project uses Changesets, GitHub Actions, and npm Trusted Publishing.
 
 - GitHub repository: `https://github.com/shishengkai/vitepress-plugin-responsive-images`
 - npm package: `vitepress-plugin-responsive-images`
-- npm Trusted Publishing is configured for the GitHub Actions release workflow.
 - Releases are managed with Changesets.
 - The release workflow uses `CHANGESETS_TOKEN` for GitHub PR, tag, and release writes because the repository owner disables write permissions for the default `GITHUB_TOKEN`.
 - `CHANGESETS_TOKEN` should be a fine-grained GitHub token with access to this repository and these permissions: Contents read/write, Pull requests read/write, and Metadata read-only.
