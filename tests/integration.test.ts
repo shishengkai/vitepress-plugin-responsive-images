@@ -4,6 +4,8 @@ import path from 'node:path'
 import { promisify } from 'node:util'
 import sharp from 'sharp'
 import { beforeAll, describe, expect, it } from 'vitest'
+import type { ResolvedConfig } from 'vite'
+import { createResponsiveImagesPlugins } from '../src/index'
 
 const execFileAsync = promisify(execFile)
 const fixtureRoot = path.resolve('tests/fixtures/basic')
@@ -24,6 +26,32 @@ beforeAll(async () => {
 })
 
 describe('VitePress integration', () => {
+  it('warms the manifest during config resolution', async () => {
+    const { runtime, vitePlugin } = createResponsiveImagesPlugins({
+      widths: [480, 720],
+      formats: ['webp']
+    })
+
+    const config = {
+      root: docsRoot,
+      base: '/',
+      cacheDir: path.join(docsRoot, '.vitepress', 'cache'),
+      build: {
+        outDir: path.join(docsRoot, '.vitepress', 'dist')
+      }
+    } as ResolvedConfig
+
+    if (typeof vitePlugin.configResolved !== 'function') {
+      throw new Error('Expected configResolved hook to be defined.')
+    }
+
+    await vitePlugin.configResolved(config)
+
+    expect(runtime.built).toBe(true)
+    expect(runtime.manifest.size).toBeGreaterThan(0)
+    expect([...runtime.manifest.values()].some((entry) => entry.source === './images/dashboard.png')).toBe(true)
+  })
+
   it('builds picture markup and generated assets', async () => {
     await execFileAsync('npx', ['vitepress', 'build', 'docs'], {
       cwd: fixtureRoot,

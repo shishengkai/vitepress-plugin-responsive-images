@@ -13,13 +13,11 @@ export function responsiveImagesVitePlugin(runtime: RuntimeState): Plugin {
     name: 'vitepress-plugin-responsive-images',
     async configResolved(config) {
       resolvedConfig = config
-      runtime.root = config.root
-      runtime.base = config.base || '/'
-      runtime.cacheDir = path.join(config.cacheDir, 'responsive-images')
-      runtime.outDir = config.build.outDir
+      applyResolvedConfig(runtime, config)
+      await ensureManifest(runtime)
     },
     async buildStart() {
-      await buildManifest(runtime)
+      await ensureManifest(runtime)
     },
     resolveId(source) {
       const fileName = getGeneratedFileName(source, runtime)
@@ -31,14 +29,34 @@ export function responsiveImagesVitePlugin(runtime: RuntimeState): Plugin {
       return `export default ${JSON.stringify(joinUrl(runtime.base, runtime.options.outputDir, fileName))}`
     },
     async configureServer(server) {
-      await buildManifest(runtime)
+      await ensureManifest(runtime)
       installDevMiddleware(server, runtime)
+      server.watcher.on('change', async () => {
+        await rebuildManifest(runtime)
+      })
     },
     async closeBundle() {
       if (!resolvedConfig) return
       await copyGeneratedImages(runtime)
     }
   }
+}
+
+function applyResolvedConfig(runtime: RuntimeState, config: ResolvedConfig): void {
+  runtime.root = config.root
+  runtime.base = config.base || '/'
+  runtime.cacheDir = path.join(config.cacheDir, 'responsive-images')
+  runtime.outDir = config.build.outDir
+}
+
+async function ensureManifest(runtime: RuntimeState): Promise<void> {
+  if (!runtime.built) {
+    await rebuildManifest(runtime)
+  }
+}
+
+async function rebuildManifest(runtime: RuntimeState): Promise<void> {
+  await buildManifest(runtime)
 }
 
 function getGeneratedFileName(source: string, runtime: RuntimeState): string | undefined {
