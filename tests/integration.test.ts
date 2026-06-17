@@ -140,4 +140,47 @@ describe('VitePress integration', () => {
     expect(generatedAssets.some((asset) => asset.endsWith('.webp'))).toBe(true)
     expect(generatedAssets.some((asset) => asset.endsWith('.png'))).toBe(true)
   })
+
+  it('clears stale cache when generation options change', async () => {
+    const config = {
+      root: docsRoot,
+      base: '/',
+      cacheDir: path.join(docsRoot, '.vitepress', 'cache'),
+      build: {
+        outDir: path.join(docsRoot, '.vitepress', 'dist')
+      }
+    } as ResolvedConfig
+    const cacheDir = path.join(docsRoot, '.vitepress', 'cache', 'responsive-images')
+
+    const first = createResponsiveImagesPlugins({
+      widths: [480],
+      formats: ['webp'],
+      quality: { webp: 80 }
+    })
+
+    if (typeof first.vitePlugin.configResolved !== 'function') {
+      throw new Error('Expected configResolved hook to be defined.')
+    }
+
+    await (first.vitePlugin.configResolved as unknown as (config: ResolvedConfig) => void | Promise<void>)(config)
+
+    const firstFiles = await fs.readdir(cacheDir)
+    expect(firstFiles.some((file) => file.includes('webp-q80'))).toBe(true)
+
+    const second = createResponsiveImagesPlugins({
+      widths: [480],
+      formats: ['webp'],
+      quality: { webp: 90 }
+    })
+
+    if (typeof second.vitePlugin.configResolved !== 'function') {
+      throw new Error('Expected configResolved hook to be defined.')
+    }
+
+    await (second.vitePlugin.configResolved as unknown as (config: ResolvedConfig) => void | Promise<void>)(config)
+
+    const secondFiles = await fs.readdir(cacheDir)
+    expect(secondFiles.some((file) => file.includes('webp-q90'))).toBe(true)
+    expect(secondFiles.some((file) => file.includes('webp-q80'))).toBe(false)
+  })
 })

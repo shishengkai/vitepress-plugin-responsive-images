@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { RuntimeState } from './types'
+import { collectManifestFileNames } from './cache'
 import { buildManifest } from './scan'
 import { joinUrl } from './path'
 
@@ -96,15 +97,17 @@ function installDevMiddleware(server: ViteDevServer, runtime: RuntimeState): voi
 
 async function copyGeneratedImages(runtime: RuntimeState): Promise<void> {
   const targetDir = path.join(runtime.outDir, runtime.options.outputDir)
-  await fs.mkdir(targetDir, { recursive: true })
+  const referenced = collectManifestFileNames(runtime.manifest)
 
-  try {
-    const files = await fs.readdir(runtime.cacheDir)
-    await Promise.all(
-      files.map((file) => fs.copyFile(path.join(runtime.cacheDir, file), path.join(targetDir, file)))
-    )
-  } catch (error) {
-    const code = typeof error === 'object' && error && 'code' in error ? (error as { code?: string }).code : undefined
-    if (code !== 'ENOENT') throw error
+  await fs.rm(targetDir, { recursive: true, force: true })
+  if (referenced.size === 0) {
+    return
   }
+
+  await fs.mkdir(targetDir, { recursive: true })
+  await Promise.all(
+    [...referenced].map((file) =>
+      fs.copyFile(path.join(runtime.cacheDir, file), path.join(targetDir, file))
+    )
+  )
 }

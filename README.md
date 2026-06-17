@@ -12,6 +12,7 @@ Build responsive images automatically:
 
 ```html
 <picture>
+  <source type="image/avif" srcset="... 480w, ... 720w, ... 1440w">
   <source type="image/webp" srcset="... 480w, ... 720w, ... 1440w">
   <img src="...png" srcset="... 480w, ... 720w, ... 1440w" sizes="(max-width: 768px) 100vw, 720px" alt="Dashboard screenshot">
 </picture>
@@ -74,6 +75,7 @@ export default withResponsiveImages(
 - Avoids upscaling images.
 - Adds `loading="lazy"` and `decoding="async"` by default.
 - Injects default `.vp-doc` layout styles for `<picture>` and `<img>` elements.
+- Invalidates cached variants automatically when `widths`, `formats`, or `quality` change.
 
 ## Configuration
 
@@ -183,6 +185,14 @@ import 'vitepress-plugin-responsive-images/vp-doc-picture.css'
 ```
 
 Custom themes that do not use the `.vp-doc` wrapper should provide their own layout rules.
+
+### Cache behavior
+
+Generated variants are stored in `.vitepress/cache/responsive-images` and copied into the build output on production builds.
+
+The plugin tracks a fingerprint of generation options (`widths`, `formats`, and `quality`). When those options change, the cache directory is cleared automatically so old variants are not reused.
+
+After each manifest rebuild, unreferenced cache files are pruned. Production builds also replace the output image directory with only the files referenced by the current manifest, so you do not need to manually delete `.vitepress/dist` or `.vitepress/cache/responsive-images` after changing image settings.
 
 ```ts
 interface ResponsiveImagesOptions {

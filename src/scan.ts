@@ -2,12 +2,14 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { glob } from 'tinyglobby'
 import type { RuntimeState } from './types'
+import { ensureCacheMatchesOptions, pruneStaleCacheFiles } from './cache'
 import { normalizePath, resolveImageSource } from './path'
 import { generateImage } from './generate'
 
 const markdownImagePattern = /!\[[^\]]*\]\(([^\s)]+)(?:\s+["'][^"']*["'])?\)/g
 
 export async function buildManifest(runtime: RuntimeState): Promise<void> {
+  await ensureCacheMatchesOptions(runtime)
   runtime.manifest.clear()
 
   const files = await glob(runtime.options.include, {
@@ -21,6 +23,7 @@ export async function buildManifest(runtime: RuntimeState): Promise<void> {
     await scanMarkdownFile(runtime, file)
   }
 
+  await pruneStaleCacheFiles(runtime)
   runtime.built = true
 }
 
