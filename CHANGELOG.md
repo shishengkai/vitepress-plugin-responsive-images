@@ -1,5 +1,11 @@
 # vitepress-plugin-responsive-images
 
+## 0.2.1
+
+### Patch Changes
+
+- [`faf555d`](https://github.com/shishengkai/vitepress-plugin-responsive-images/commit/faf555d973b0ed9981a1f17c3ce13d16ac6440e5) Thanks [@AaronJiTuo](https://github.com/AaronJiTuo)! - Convert fallback images for non-JPG/PNG source formats to PNG instead of failing on inputs such as WebP, AVIF, BMP, or TIFF.
+
 ## 0.2.0
 
 ### Minor Changes
