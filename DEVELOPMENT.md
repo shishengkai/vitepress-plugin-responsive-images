@@ -88,9 +88,12 @@ VitePress 2 uses async markdown rendering internally. This plugin avoids direct 
 
 - GitHub repository: `https://github.com/shishengkai/vitepress-plugin-responsive-images`
 - npm package: `vitepress-plugin-responsive-images`
-- Initial publish can be manual with `npm publish --access public`, but npm requires either publish-time 2FA or a granular access token that is allowed to bypass 2FA.
-- After the first npm package exists, configure npm Trusted Publishing for the GitHub Actions release workflow.
-- Keep the release workflow manual until npm Trusted Publishing has been configured for this repository and workflow file.
+- npm Trusted Publishing is configured for the GitHub Actions release workflow.
+- Releases are managed with Changesets.
+- User-facing changes should include a changeset from `npm run changeset`.
+- Pushing changesets to `main` creates a `Version Packages` pull request.
+- Merging the version pull request publishes to npm and creates the GitHub release through Trusted Publishing.
+- Do not manually publish from a local machine unless the automated release path is unavailable.
 
 ## Validation Checklist
 

@@ -107,6 +107,18 @@ responsiveImages: false
 ---
 ```
 
+## Releasing
+
+This project uses Changesets and npm Trusted Publishing.
+
+For user-facing changes, add a changeset before opening a pull request:
+
+```bash
+npm run changeset
+```
+
+When changes are merged into `main`, the release workflow creates a `Version Packages` pull request. Merging that pull request publishes the package to npm and creates the GitHub release through Trusted Publishing.
+
 ## License
 
 MIT
