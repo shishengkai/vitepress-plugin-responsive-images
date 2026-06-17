@@ -1,8 +1,10 @@
-import type { NormalizedOptions, ResponsiveImagesOptions } from './types'
+import type { NormalizedOptions, OutputFormat, ResponsiveImagesOptions } from './types'
+
+const FORMAT_ORDER: OutputFormat[] = ['avif', 'webp']
 
 const defaultOptions: NormalizedOptions = {
   widths: [480, 720, 960, 1440],
-  formats: ['webp'],
+  formats: [...FORMAT_ORDER],
   fallbackFormat: 'original',
   sizes: '(max-width: 768px) 100vw, 720px',
   outputDir: '_responsive-images',
@@ -30,13 +32,7 @@ export function normalizeOptions(options: ResponsiveImagesOptions = {}): Normali
     throw new Error('vitepress-plugin-responsive-images: at least one positive width is required.')
   }
 
-  const formats = Array.from(new Set(options.formats ?? defaultOptions.formats))
-
-  for (const format of formats) {
-    if (format !== 'webp' && format !== 'avif') {
-      throw new Error(`vitepress-plugin-responsive-images: unsupported output format "${format}".`)
-    }
-  }
+  const formats = normalizeFormats(options.formats)
 
   return {
     ...defaultOptions,
@@ -56,4 +52,24 @@ export function normalizeOptions(options: ResponsiveImagesOptions = {}): Normali
 
 function stripSlashes(value: string): string {
   return value.replace(/^\/+|\/+$/g, '')
+}
+
+export function normalizeFormats(formats?: ResponsiveImagesOptions['formats']): OutputFormat[] {
+  if (formats === undefined) {
+    return [...FORMAT_ORDER]
+  }
+
+  const uniqueFormats = Array.from(new Set(formats))
+
+  if (uniqueFormats.length === 0) {
+    throw new Error('vitepress-plugin-responsive-images: at least one modern output format is required.')
+  }
+
+  for (const format of uniqueFormats) {
+    if (format !== 'webp' && format !== 'avif') {
+      throw new Error(`vitepress-plugin-responsive-images: unsupported output format "${format}".`)
+    }
+  }
+
+  return FORMAT_ORDER.filter((format) => uniqueFormats.includes(format))
 }

@@ -12,6 +12,13 @@ export interface FormatQuality {
 
 export interface ResponsiveImagesOptions {
   widths?: number[]
+  /**
+   * Modern image formats to generate for `<picture><source>` entries.
+   * JPG/PNG fallback is always preserved separately.
+   *
+   * The default is `['avif', 'webp']`.
+   * Use `['webp']` for faster builds or `['avif']` when smallest files matter more than encoding speed.
+   */
   formats?: OutputFormat[]
   fallbackFormat?: FallbackFormat
   sizes?: string

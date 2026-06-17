@@ -59,7 +59,7 @@ export default withResponsiveImages(
   }),
   {
     widths: [480, 720, 960, 1440],
-    formats: ['webp'],
+    formats: ['avif', 'webp'],
     sizes: '(max-width: 768px) 100vw, 720px'
   }
 )
@@ -70,11 +70,34 @@ export default withResponsiveImages(
 - Processes local Markdown images written as `![]()`.
 - Processes `jpg`, `jpeg`, and `png` by default.
 - Skips remote URLs, data URLs, SVG, GIF, Vue components, theme images, CSS backgrounds, and handwritten HTML images.
-- Generates WebP plus original-format JPG/PNG fallback by default.
+- Generates AVIF + WebP modern sources, with original-format JPG/PNG fallback.
 - Avoids upscaling images.
 - Adds `loading="lazy"` and `decoding="async"` by default.
 
 ## Configuration
+
+### Modern formats
+
+Use `formats` to choose which modern image variants are generated for `<picture><source>` entries. JPG/PNG fallback is always kept for older browsers.
+
+| Value | Generates | When to use |
+| --- | --- | --- |
+| `['avif', 'webp']` (default) | AVIF + WebP | Best balance of size and compatibility |
+| `['webp']` | WebP only | Faster builds; good for most documentation sites |
+| `['avif']` | AVIF only | Smallest files, but slower to encode |
+
+Examples:
+
+```ts
+// Default: AVIF + WebP
+formats: ['avif', 'webp']
+
+// WebP only
+formats: ['webp']
+
+// AVIF only
+formats: ['avif']
+```
 
 ```ts
 interface ResponsiveImagesOptions {
