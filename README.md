@@ -31,7 +31,7 @@ The plugin generates responsive variants at build time and rewrites local images
 This plugin exists because documentation sites often fail the same PageSpeed Insights and Lighthouse image audits:
 
 - **Use modern image formats** — WebP or AVIF can deliver the same visual quality at a smaller download size than PNG or JPEG alone.
-- **Serve appropriately sized images** — a 1267×743 asset shown at 600×352 still downloads the full file unless you generate responsive variants.
+- **Serve appropriately sized images** — a 1920×1080 asset shown at 640×360 still downloads the full HD file unless you generate responsive variants.
 
 Those warnings are not abstract. Oversized, legacy-format images slow down first paint, hurt mobile users on slow networks, and drag down performance scores that search engines and site owners care about. The goal is not compression for its own sake. It is **faster page loads**, **better reader experience**, and **stronger SEO signals** — outcomes every web admin wants.
 
