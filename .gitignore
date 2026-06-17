@@ -1,0 +1,11 @@
+node_modules
+.DS_Store
+Drafts
+dist
+coverage
+*.log
+.vitepress/cache
+.vitepress/dist
+tests/fixtures/**/docs/.vitepress/cache
+tests/fixtures/**/docs/.vitepress/dist
+tests/fixtures/**/docs/_responsive-images
