@@ -2,13 +2,21 @@
 
 Automatically convert local Markdown images in VitePress docs into responsive `<picture>` elements with WebP/AVIF sources and JPG/PNG fallbacks.
 
-Write normal Markdown:
+Keep writing images the way you already do in Markdown:
 
 ```md
+<!-- Inline -->
 ![Dashboard screenshot](./images/dashboard.png)
+
+<!-- Reference-style -->
+![Architecture diagram][arch]
+[arch]: ./images/architecture.png
+
+<!-- Handwritten HTML -->
+<img src="./images/hero.png" alt="Hero" class="rounded">
 ```
 
-Build responsive images automatically:
+The plugin generates responsive variants at build time and rewrites local images into markup like this:
 
 ```html
 <picture>
@@ -50,6 +58,33 @@ export default withResponsiveImages(
   })
 )
 ```
+
+### Example page
+
+A typical documentation page can mix all supported syntaxes in one file:
+
+```md
+# Product overview
+
+![Dashboard screenshot](./images/dashboard.png)
+
+See the full architecture in the diagram below.
+
+![Architecture diagram][arch]
+
+For fine-grained layout control, you can still use HTML:
+
+<img
+  src="./images/hero.png"
+  alt="Product hero"
+  class="rounded border"
+  loading="eager"
+>
+
+[arch]: ./images/architecture.png "System architecture"
+```
+
+After `vitepress build`, local images in that page are emitted as `<picture>` elements. Handwritten HTML keeps attributes such as `class`, `style`, `loading`, and `decoding` on the fallback `<img>`.
 
 With options:
 
@@ -231,27 +266,28 @@ interface ResponsiveImagesOptions {
 
 ## Supported Markdown image syntax
 
-Inline Markdown:
+| Syntax | Example | Notes |
+| --- | --- | --- |
+| Inline Markdown | `![Alt](./images/a.png)` | Default authoring style |
+| Reference-style | `![Alt][ref]` + `[ref]: ./images/a.png` | Useful for repeated images or long URLs |
+| Shortcut reference | `![logo]` + `[logo]: ./images/logo.png` | Same-file reference definitions only |
+| Handwritten HTML | `<img src="./images/a.png" alt="Alt">` | Preserves existing HTML attributes |
+
+Reference-style images must define the URL in the same Markdown file:
 
 ```md
-![Dashboard screenshot](./images/dashboard.png)
+![Logo][logo]
+
+[logo]: /logo.png
 ```
 
-Reference-style Markdown:
+Handwritten HTML inside an existing `<picture>` element is left unchanged.
 
-```md
-![Architecture diagram][arch]
+## Not supported yet
 
-[arch]: ./images/architecture.png "Architecture"
-```
-
-Handwritten HTML in Markdown:
-
-```html
-<img src="./images/hero.png" alt="Hero" class="rounded">
-```
-
-Handwritten HTML keeps existing attributes such as `class`, `style`, `loading`, and `decoding` on the rendered fallback `<img>` element.
+- Theme hero images, site logo, and other frontmatter-driven theme assets
+- Per-image opt-out (page-level `responsiveImages: false` is supported)
+- Vue image components and CSS `background-image`
 
 ## Page opt-out
 
