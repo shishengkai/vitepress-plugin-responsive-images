@@ -7,7 +7,7 @@
   "author": "Shisheng Kai",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shishengkai/vitepress-plugin-responsive-images"
+    "url": "git+https://github.com/shishengkai/vitepress-plugin-responsive-images.git"
   },
   "bugs": {
     "url": "https://github.com/shishengkai/vitepress-plugin-responsive-images/issues"
