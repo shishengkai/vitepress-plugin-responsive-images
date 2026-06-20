@@ -2,7 +2,7 @@
 
 ![vitepress-plugin-responsive-images social preview](https://repository-images.githubusercontent.com/1271986569/c159c03e-9770-4009-b09b-7d1d51e159d5)
 
-[Listed on Vite Plugin Registry](https://registry.vite.dev/plugins)
+[Listed in Awesome VitePress](https://github.com/hacxy/awesome-vitepress) · [Listed on Vite Plugin Registry](https://registry.vite.dev/plugins)
 
 Improve PageSpeed, Lighthouse, and real-world load times for VitePress documentation sites by automatically serving modern image formats and responsive sizes for local Markdown images.
 
