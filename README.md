@@ -54,6 +54,14 @@ You keep the same authoring workflow. Visitors get smaller, appropriately sized 
 | `1.6.x` | Stable supported |
 | `2.0.x` | Supported and continuously tested; alpha caveats apply while VitePress 2 is not stable |
 
+## Sites using this plugin
+
+Documentation sites already using this plugin:
+
+- [桃花香](https://www.taohuaxiang.com)
+
+Using this plugin on your site? Open an [issue](https://github.com/shishengkai/vitepress-plugin-responsive-images/issues) or [pull request](https://github.com/shishengkai/vitepress-plugin-responsive-images/pulls) to add your site to this list.
+
 ## Install
 
 ```bash
