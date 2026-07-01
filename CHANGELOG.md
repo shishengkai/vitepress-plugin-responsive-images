@@ -1,5 +1,11 @@
 # vitepress-plugin-responsive-images
 
+## 0.3.4
+
+### Patch Changes
+
+- [`3599e53`](https://github.com/shishengkai/vitepress-plugin-responsive-images/commit/3599e535b68b1a8f41221e96ec01b70df16a1f4a) Thanks [@AaronJiTuo](https://github.com/AaronJiTuo)! - Add a showcase section to the README listing sites using this plugin.
+
 ## 0.3.3
 
 ### Patch Changes
